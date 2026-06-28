@@ -1,4 +1,4 @@
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
@@ -21,5 +21,11 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("/health", () => Results.Ok(new
+{
+    status = "healthy",
+    service = "catalog" // Her serviste o servisin adını yaz: inventory, order vb.
+}));
 
 app.Run();
