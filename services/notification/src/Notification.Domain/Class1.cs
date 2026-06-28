@@ -1,4 +1,4 @@
-﻿namespace Inventory.UnitTests
+﻿namespace Notification.Domain
 {
     public class Class1
     {
