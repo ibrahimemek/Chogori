@@ -1,0 +1,140 @@
+services:
+  # --- Databases ---
+  catalog-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: catalog_user
+      POSTGRES_PASSWORD: catalog_password
+      POSTGRES_DB: catalog_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U catalog_user -d catalog_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  inventory-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: inventory_user
+      POSTGRES_PASSWORD: inventory_password
+      POSTGRES_DB: inventory_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inventory_user -d inventory_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  order-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: order_user
+      POSTGRES_PASSWORD: order_password
+      POSTGRES_DB: order_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U order_user -d order_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  payment-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: payment_user
+      POSTGRES_PASSWORD: payment_password
+      POSTGRES_DB: payment_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U payment_user -d payment_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # --- ORTAK ALTYAPI ---
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  elasticsearch:
+    image: elasticsearch:8.11.1
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"'"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  # --- Services ---
+  catalog-api:
+    image: chogori/catalog-api:latest
+    build:
+      context: ../
+      dockerfile: services/catalog/Dockerfile
+    depends_on:
+      catalog-db:
+        condition: service_healthy
+
+  inventory-api:
+    image: chogori/inventory-api:latest
+    build:
+      context: ../
+      dockerfile: services/inventory/Dockerfile
+    depends_on:
+      inventory-db:
+        condition: service_healthy
+
+  order-api:
+    image: chogori/order-api:latest
+    build:
+      context: ../
+      dockerfile: services/order/Dockerfile
+    depends_on:
+      order-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  payment-api:
+    image: chogori/payment-api:latest
+    build:
+      context: ../
+      dockerfile: services/payment/Dockerfile
+    depends_on:
+      payment-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  shipping-api:
+    image: chogori/shipping-api:latest
+    build:
+      context: ../
+      dockerfile: services/shipping/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  notification-api:
+    image: chogori/notification-api:latest
+    build:
+      context: ../
+      dockerfile: services/notification/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
