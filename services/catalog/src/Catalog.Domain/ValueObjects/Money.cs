@@ -22,7 +22,7 @@ namespace Catalog.Domain.ValueObjects
             if (amount < 0)
                 throw new DomainException("Price cannot be negative.");
             if (string.IsNullOrWhiteSpace(currencyCode)) 
-                throw new DomainException("Currency must be specified.");
+                throw new DomainException("Currency code must be specified.");
 
             return new Money(amount, currencyCode);
         }
