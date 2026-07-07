@@ -12,7 +12,10 @@ namespace Catalog.Domain.Entities
         public string Name { get; private set; }
         public Guid? ParentCategoryId { get; private set; }
 
-        private Category() { }
+        private Category() 
+        {
+            Name = null!;
+        }
         public Category(Guid id, string name, Guid? parentCategoryId = null)
         {
             if (string.IsNullOrWhiteSpace(name)) 
