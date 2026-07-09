@@ -2,9 +2,7 @@
 using Catalog.Application.DTOs;
 using Catalog.Application.Queries;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 
 namespace Catalog.API.Controllers
 {
@@ -25,12 +23,20 @@ namespace Catalog.API.Controllers
             return CreatedAtAction(nameof(GetById), new { id = result }, result);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Get(CancellationToken cancellationToken)
+        {
+            GetAllProductsQuery query = new GetAllProductsQuery();
+            IReadOnlyCollection<ProductDTO> result = await _sender.Send(query, cancellationToken);
+            return Ok(result);
+        }
+
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
         {
             GetProductByIdQuery query = new GetProductByIdQuery(id);
             ProductDTO result = await _sender.Send(query, cancellationToken);
-            return Ok(result);
+            return result is null ? NotFound() : Ok(result);
         }
 
         [HttpGet("category/{categoryId:guid}")]
@@ -42,10 +48,10 @@ namespace Catalog.API.Controllers
             return Ok(results);
         }
 
-        [HttpPut("/price")]
-        public async Task<IActionResult> UpdatePrice([FromRoute] [FromBody] UpdateProductPriceCommand request, CancellationToken cancellationToken)
+        [HttpPut("{id:guid}/price")]
+        public async Task<IActionResult> UpdatePrice([FromRoute] Guid id, [FromBody] UpdateProductPriceCommand request, CancellationToken cancellationToken)
         {
-            var command = new UpdateProductPriceCommand(request.ProductId, request.NewPriceAmount, request.NewPriceCurrencyCode);
+            var command = new UpdateProductPriceCommand(id, request.NewPriceAmount, request.NewPriceCurrencyCode);
             await _sender.Send(command, cancellationToken);
             return NoContent();
         }

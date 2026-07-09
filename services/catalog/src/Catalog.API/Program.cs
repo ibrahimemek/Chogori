@@ -1,6 +1,5 @@
 ﻿using Catalog.Infrastructure;
-//using Catalog.API.Middlewares; // Exception middleware klasörünüze göre namespace'i gerekirse güncelleyin
-
+using Catalog.API.Middlewares; 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddMediatR(cfg =>
@@ -17,7 +16,7 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 
-//app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

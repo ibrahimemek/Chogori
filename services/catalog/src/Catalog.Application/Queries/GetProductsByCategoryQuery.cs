@@ -22,18 +22,9 @@ namespace Catalog.Application.Queries
 
         public async Task<IReadOnlyList<ProductDTO>> Handle(GetProductsByCategoryQuery request, CancellationToken cancellationToken)
         {
-            IReadOnlyList<Product> products = await _productRepository.GetByCategoryAsync(request.CategoryId, cancellationToken);
+            IReadOnlyList<Product> products = await _productRepository.GetByCategoryAsync(request.CategoryId, cancellationToken, false);
 
-            return products.Select(product => new ProductDTO(
-                product.Id,
-                product.Name,
-                product.Description,
-                product.Price.Amount,
-                product.Price.CurrencyCode,
-                product.StockQuantity,
-                product.CategoryId,
-                product.IsActive
-            )).ToList().AsReadOnly();
+            return products.Select(product => product.ToDto()).ToList().AsReadOnly();
         }
     }
 }

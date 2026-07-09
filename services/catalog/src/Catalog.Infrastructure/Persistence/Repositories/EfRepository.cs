@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace Catalog.Infrastructure.Persistence.Repositories
 {
-    internal class EfRespository<T> where T : BaseEntity
+    internal class EfRepository<T> where T : BaseEntity
     {
         protected readonly CatalogDbContext _context;
         protected readonly DbSet<T> _dbSet;
 
-        public EfRespository(CatalogDbContext context)
+        public EfRepository(CatalogDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _dbSet = _context.Set<T>();

@@ -22,18 +22,10 @@ namespace Catalog.Application.Queries
 
         public async Task<ProductDTO?> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
         {
-            var product = await _productRepository.GetByIdAsync(request.ProductId, cancellationToken);
+            var product = await _productRepository.GetByIdAsync(request.ProductId, cancellationToken, false);
             if (product == null) return null;
 
-            return new ProductDTO(
-                product.Id,
-                product.Name,
-                product.Description,
-                product.Price.Amount,
-                product.Price.CurrencyCode,
-                product.StockQuantity,
-                product.CategoryId,
-                product.IsActive);
+            return product.ToDto();
         }
     }
 }

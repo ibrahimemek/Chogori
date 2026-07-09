@@ -4,7 +4,6 @@ using Catalog.Domain.ValueObjects;
 using SharedKernel;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +20,7 @@ namespace Catalog.Domain.Entities
         public Guid CategoryId { get; private set; }
         public bool IsActive { get; private set; }
 
+        private Product() { }
         public static Product Create(string name, string description, Money price, Guid categoryId)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new DomainException("Product name cannot be empty");

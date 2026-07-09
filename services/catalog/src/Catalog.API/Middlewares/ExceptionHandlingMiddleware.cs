@@ -22,7 +22,7 @@ namespace Catalog.API.Middlewares
                 await _next(context);
             } catch(Exception e)
             {
-                _logger.LogError(e, "Error occured: {Message}", e.Message);
+                _logger.LogError(e, "Error occurred: {Message}", e.Message);
                 await HandleExceptionAsync(context, e);
             }
         }
@@ -30,10 +30,15 @@ namespace Catalog.API.Middlewares
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             HttpStatusCode code = HttpStatusCode.InternalServerError;
-            string result = "A system error occured.";
+            string result = "A system error occurred.";
             if (exception is DomainException)
             {
                 code = HttpStatusCode.BadRequest;
+                result = exception.Message;
+            }
+            else if (exception is NotFoundException)
+            {
+                code = HttpStatusCode.NotFound;
                 result = exception.Message;
             }
 

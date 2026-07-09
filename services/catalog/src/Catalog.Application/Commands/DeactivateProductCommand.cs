@@ -1,4 +1,5 @@
 ﻿using Catalog.Domain.Entities;
+using Catalog.Domain.Exceptions;
 using Catalog.Domain.Repositories;
 using MediatR;
 using System;
@@ -26,7 +27,7 @@ namespace Catalog.Application.Commands
         {
             Product product = await _productRepository.GetByIdAsync(request.ProductId, cancellationToken);
             if (product == null)
-                throw new Exception("Product not found.");
+                throw new ProductNotFoundException(request.ProductId);
             product.Deactivate();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }

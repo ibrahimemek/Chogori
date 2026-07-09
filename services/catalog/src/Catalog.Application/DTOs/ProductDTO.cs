@@ -10,7 +10,7 @@ namespace Catalog.Application.DTOs
     public record ProductDTO(
         Guid Id,
         string Name,
-        string Descriiption,
+        string Description,
         decimal PriceAmount,
         string PriceCurrencyCode,
         int StockQuantity,

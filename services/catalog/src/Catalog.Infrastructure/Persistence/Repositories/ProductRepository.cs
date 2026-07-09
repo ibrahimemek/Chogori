@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Catalog.Infrastructure.Persistence.Repositories
 {
-    internal class ProductRepository : EfRespository<Product>, IProductRepository
+    internal class ProductRepository : EfRepository<Product>, IProductRepository
     {
         public ProductRepository(CatalogDbContext context) : base(context)
         {

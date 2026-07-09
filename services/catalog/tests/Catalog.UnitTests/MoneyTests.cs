@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 
 namespace Catalog.UnitTests
 {
@@ -16,7 +17,8 @@ namespace Catalog.UnitTests
             Money money1 = Money.Create(10, "TL");
             Money money2 = Money.Create(10, "TL");
 
-            Assert.Equal(money1, money2);
+            money1.Should().Be(money2);
+            (money1 == money2).Should().BeTrue();
         }
 
         [Fact]
@@ -25,7 +27,8 @@ namespace Catalog.UnitTests
             Money money1 = Money.Create(10, "TL");
             Money money2 = Money.Create(20, "TL");
 
-            Assert.NotEqual(money1, money2);
+            money1.Should().NotBe(money2);
+            (money1 != money2).Should().BeTrue();
         }
 
         [Fact]
@@ -34,13 +37,16 @@ namespace Catalog.UnitTests
             Money money1 = Money.Create(10, "TL");
             Money money2 = Money.Create(10, "USD");
 
-            Assert.NotEqual(money1, money2);
+            money1.Should().NotBe(money2);
+            (money1 != money2).Should().BeTrue();
         }
 
         [Fact]
         public void Money_Create_With_Negative_Amount_Should_Throw_DomainException()
         {
-            Assert.Throws<DomainException>(() => Money.Create(-5, "TL"));
+            Action act = () => Money.Create(-5, "TL");
+
+            act.Should().Throw<DomainException>();
         }
 
 

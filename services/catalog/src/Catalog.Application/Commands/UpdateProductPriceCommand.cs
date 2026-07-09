@@ -1,4 +1,5 @@
 ﻿using Catalog.Domain.Entities;
+using Catalog.Domain.Exceptions;
 using Catalog.Domain.Repositories;
 using Catalog.Domain.ValueObjects;
 using MediatR;
@@ -30,7 +31,7 @@ namespace Catalog.Application.Commands
         {
             Product product = await _productRepository.GetByIdAsync(request.ProductId, cancellationToken);
             if (product == null) 
-                throw new Exception("Product not found");
+                throw new ProductNotFoundException(request.ProductId);
             Money newPrice = Money.Create(request.NewPriceAmount, request.NewPriceCurrencyCode);
             product.UpdatePrice(newPrice);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
