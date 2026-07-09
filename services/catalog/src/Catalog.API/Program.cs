@@ -1,29 +1,24 @@
-﻿using Catalog.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
+﻿using Catalog.Infrastructure;
+//using Catalog.API.Middlewares; // Exception middleware klasörünüze göre namespace'i gerekirse güncelleyin
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(typeof(Catalog.Application.Commands.CreateProductCommand).Assembly));
+
+
+builder.Services.AddInfrastructureServices(builder.Configuration);
+
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<CatalogDbContext>(options =>
-{
-    var connectionString = builder.Configuration.GetConnectionString("CatalogDatabase");
-
-    options.UseNpgsql(connectionString, b =>
-        b.MigrationsAssembly(typeof(CatalogDbContext).Assembly.FullName));
-});
-
-
-
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
+//app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -31,15 +26,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.MapGet("/health", () => Results.Ok(new
 {
     status = "healthy",
-    service = "catalog" // Her serviste o servisin adını yaz: inventory, order vb.
+    service = "catalog"
 }));
 
 app.Run();

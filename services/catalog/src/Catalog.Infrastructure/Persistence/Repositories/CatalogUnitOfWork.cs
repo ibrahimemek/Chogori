@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Catalog.Domain.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Catalog.Infrastructure.Persistence.Repositories
 {
-    public class CatalogUnitOfWork
+    internal class CatalogUnitOfWork : IUnitOfWork
     {
         private readonly CatalogDbContext _context;
 
