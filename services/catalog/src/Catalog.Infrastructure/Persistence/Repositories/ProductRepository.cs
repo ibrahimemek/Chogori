@@ -18,9 +18,10 @@ namespace Catalog.Infrastructure.Persistence.Repositories
         }
 
 
-        public async Task<IReadOnlyList<Product>> GetByCategoryAsync(Guid categoryId, CancellationToken cancellationToken, bool tracking = true, params Expression<Func<Product, object>>[] includes)
+        public async Task<IReadOnlyList<Product>> GetByCategoryAsync(Guid categoryId, bool tracking, CancellationToken cancellationToken, bool includeInactive = false,  params Expression<Func<Product, object>>[] includes)
         {
             IQueryable<Product> query = _dbSet;
+
             if (!tracking)
                 query = query.AsNoTracking();
 
@@ -29,7 +30,8 @@ namespace Catalog.Infrastructure.Persistence.Repositories
                 query = query.Include(include);
             }
 
-            return await query.Where(p => p.CategoryId == categoryId).ToListAsync(cancellationToken).ConfigureAwait(false);
+            return includeInactive ? await query.Where(p => p.CategoryId == categoryId).ToListAsync(cancellationToken).ConfigureAwait(false) :
+                await query.Where(p => p.CategoryId == categoryId && p.IsActive).ToListAsync(cancellationToken).ConfigureAwait(false);
         }
 
         

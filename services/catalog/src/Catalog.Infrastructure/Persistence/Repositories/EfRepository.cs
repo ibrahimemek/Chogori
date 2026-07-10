@@ -1,6 +1,6 @@
 ﻿using Catalog.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using SharedKernel;
+using SharedKernel.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +21,10 @@ namespace Catalog.Infrastructure.Persistence.Repositories
             _dbSet = _context.Set<T>();
         }
 
-        public async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken, bool tracking = true, params Expression<Func<T, object>>[] includes)
+        public async Task<T?> GetByIdAsync(Guid id, bool tracking, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = _dbSet;
+
             if (!tracking) 
                 query = query.AsNoTracking();
 
@@ -36,11 +37,14 @@ namespace Catalog.Infrastructure.Persistence.Repositories
             
         }
 
-        public async Task<IReadOnlyList<T>> GetAllAsync(CancellationToken cancellationToken, bool tracking = true, params Expression<Func<T, object>>[] includes)
+        public async Task<IReadOnlyList<T>> GetAllAsync(bool tracking, CancellationToken cancellationToken, Expression<Func<T, bool>>? filter = null, params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = _dbSet;
             if (!tracking)
                 query = query.AsNoTracking();
+
+            if (filter != null)
+                query = query.Where(filter);
 
             foreach (var include in includes)
             {

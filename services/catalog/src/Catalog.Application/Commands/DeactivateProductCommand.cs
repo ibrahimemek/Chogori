@@ -25,7 +25,7 @@ namespace Catalog.Application.Commands
         }
         public async Task Handle(DeactivateProductCommand request, CancellationToken cancellationToken)
         {
-            Product product = await _productRepository.GetByIdAsync(request.ProductId, cancellationToken);
+            Product? product = await _productRepository.GetByIdAsync(request.ProductId, true, cancellationToken);
             if (product == null)
                 throw new ProductNotFoundException(request.ProductId);
             product.Deactivate();

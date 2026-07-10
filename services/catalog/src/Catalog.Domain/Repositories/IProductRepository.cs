@@ -11,9 +11,9 @@ namespace Catalog.Domain.Repositories
 {
     public interface IProductRepository
     {
-        Task<Product?> GetByIdAsync(Guid id, CancellationToken ct, bool tracking = true, params Expression<Func<Product, object>>[] includes);
-        Task<IReadOnlyList<Product>> GetAllAsync(CancellationToken cancellationToken, bool tracking = true, params Expression<Func<Product, object>>[] includes);
-        Task<IReadOnlyList<Product>> GetByCategoryAsync(Guid categoryId, CancellationToken cancellationToken, bool tracking = true, params Expression<Func<Product, object>>[] includes);
+        Task<Product?> GetByIdAsync(Guid id, bool tracking, CancellationToken ct, params Expression<Func<Product, object>>[] includes);
+        Task<IReadOnlyList<Product>> GetAllAsync(bool tracking, CancellationToken cancellationToken, Expression<Func<Product, bool>>? filter = null, params Expression<Func<Product, object>>[] includes);
+        Task<IReadOnlyList<Product>> GetByCategoryAsync(Guid categoryId, bool tracking, CancellationToken cancellationToken, bool includeInactive = false, params Expression<Func<Product, object>>[] includes);
         Task AddAsync(Product product, CancellationToken ct);
     }
 }

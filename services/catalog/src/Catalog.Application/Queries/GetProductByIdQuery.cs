@@ -22,7 +22,7 @@ namespace Catalog.Application.Queries
 
         public async Task<ProductDTO?> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
         {
-            var product = await _productRepository.GetByIdAsync(request.ProductId, cancellationToken, false);
+            var product = await _productRepository.GetByIdAsync(request.ProductId, false, cancellationToken);
             if (product == null) return null;
 
             return product.ToDto();

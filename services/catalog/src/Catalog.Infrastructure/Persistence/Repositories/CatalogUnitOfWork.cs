@@ -1,4 +1,5 @@
 ﻿using Catalog.Domain.Repositories;
+using SharedKernel.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,20 @@ namespace Catalog.Infrastructure.Persistence.Repositories
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            return await _context.SaveChangesAsync(cancellationToken);
+            int result = await _context.SaveChangesAsync(cancellationToken);
+
+            var aggregates = _context.ChangeTracker
+                .Entries<AggregateRoot>()
+                .Select(e => e.Entity);
+
+
+            foreach (var aggregate in aggregates)
+            {
+                aggregate.ClearDomainEvents();
+            }
+
+
+            return result;
         }
     }
 }

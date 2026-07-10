@@ -1,7 +1,7 @@
 ﻿using Catalog.Domain.Events;
 using Catalog.Domain.Exceptions;
 using Catalog.Domain.ValueObjects;
-using SharedKernel;
+using SharedKernel.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,12 @@ namespace Catalog.Domain.Entities
         public Guid CategoryId { get; private set; }
         public bool IsActive { get; private set; }
 
-        private Product() { }
+        private Product()
+        {
+            Name = null!;
+            Description = null!;
+            Price = null!;
+        }
         public static Product Create(string name, string description, Money price, Guid categoryId)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new DomainException("Product name cannot be empty");

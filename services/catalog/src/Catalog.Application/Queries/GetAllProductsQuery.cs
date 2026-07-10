@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Catalog.Application.Queries
 {
-    public class GetAllProductsQuery : IRequest<IReadOnlyCollection<ProductDTO>>;
+    public record GetAllProductsQuery(bool IncludeInactive = false) : IRequest<IReadOnlyCollection<ProductDTO>>;
 
     public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, IReadOnlyCollection<ProductDTO>>
     {
@@ -23,7 +23,8 @@ namespace Catalog.Application.Queries
 
         public async Task<IReadOnlyCollection<ProductDTO>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
         {
-            IReadOnlyList<Product> products = await _productRepository.GetAllAsync(cancellationToken, false);
+            IReadOnlyList<Product> products = await _productRepository.GetAllAsync(false, cancellationToken,
+                p => request.IncludeInactive || p.IsActive, p => p.Price);
 
             return products.Select(product => product.ToDto()).ToList().AsReadOnly();
         }

@@ -1,4 +1,4 @@
-﻿using SharedKernel;
+﻿using SharedKernel.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -29,7 +29,7 @@ namespace Catalog.Application.Commands
         }
         public async Task Handle(UpdateProductPriceCommand request, CancellationToken cancellationToken)
         {
-            Product product = await _productRepository.GetByIdAsync(request.ProductId, cancellationToken);
+            Product? product = await _productRepository.GetByIdAsync(request.ProductId, true, cancellationToken, p => p.Price);
             if (product == null) 
                 throw new ProductNotFoundException(request.ProductId);
             Money newPrice = Money.Create(request.NewPriceAmount, request.NewPriceCurrencyCode);
