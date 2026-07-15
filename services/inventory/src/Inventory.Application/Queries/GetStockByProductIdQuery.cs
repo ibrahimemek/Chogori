@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Inventory.Application.Queries
 {
-    public record GetStockByProductIdQuery(Guid ProductId, bool IncludeInactive = false) : IRequest<StockItemDTO?>;
+    public record GetStockByProductIdQuery(Guid ProductId) : IRequest<StockItemDTO?>;
 
     public class GetStockByProductIdQueryHandler : IRequestHandler<GetStockByProductIdQuery, StockItemDTO?>
     {

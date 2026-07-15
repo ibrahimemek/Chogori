@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Inventory.Application.Queries
 {
-    public record GetLowStockItemsQuery(bool IncludeInactive = false) : IRequest<IReadOnlyList<StockItemDTO>>;
+    public record GetLowStockItemsQuery : IRequest<IReadOnlyList<StockItemDTO>>;
 
     public class GetLowStockItemsQueryHandler : IRequestHandler<GetLowStockItemsQuery, IReadOnlyList<StockItemDTO>>
     {
@@ -23,7 +23,7 @@ namespace Inventory.Application.Queries
 
         public async Task<IReadOnlyList<StockItemDTO>> Handle(GetLowStockItemsQuery request, CancellationToken cancellationToken)
         {
-            IReadOnlyList<StockItem> stockItems = await _stockItemRepository.GetLowStockItemsAsync(false, cancellationToken, request.IncludeInactive);
+            IReadOnlyList<StockItem> stockItems = await _stockItemRepository.GetLowStockItemsAsync(false, cancellationToken);
             if (stockItems == null) return null;
             return stockItems.Select(item => item.ToDto()).ToList().AsReadOnly();
 

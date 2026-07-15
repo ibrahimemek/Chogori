@@ -16,8 +16,9 @@ namespace Catalog.Infrastructure.Persistence.Configurations
             builder.ToTable("Products");
             builder.HasKey(p => p.Id);
 
-            builder.Property(p=>p.Name).IsRequired().HasMaxLength(200);
-            builder.Property(p=>p.Description).HasMaxLength(1000);
+            builder.Property(p => p.CategoryId).IsRequired().HasMaxLength(36);
+            builder.Property(p => p.Name).IsRequired().HasMaxLength(200);
+            builder.Property(p => p.Description).HasMaxLength(1000);
             builder.Property(p => p.StockQuantity).IsRequired();
             builder.Property(p => p.IsActive).IsRequired();
             builder.Property(p => p.CreatedDate).IsRequired();

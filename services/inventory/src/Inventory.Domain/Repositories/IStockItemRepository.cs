@@ -10,7 +10,7 @@ namespace Inventory.Domain.Repositories
 {
     public interface IStockItemRepository
     {
-        Task<StockItem?> GetByProductIdAsync(Guid productId, bool tracking, CancellationToken ct, params Expression<Func<StockItem, object>>[] includes);
-        Task<IReadOnlyList<StockItem>> GetLowStockItemsAsync(bool tracking, CancellationToken ct, bool includeInactive = false);
+        Task<StockItem?> GetByProductIdAsync(Guid productId, bool tracking, CancellationToken cancellationToken, params Expression<Func<StockItem, object>>[] includes);
+        Task<IReadOnlyList<StockItem>> GetLowStockItemsAsync(bool tracking, CancellationToken cancellationToken, params Expression<Func<StockItem, object>>[] includes);
     }
 }

@@ -1,4 +1,13 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using Inventory.Infrastructure;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(typeof(Inventory.Application.Commands.ConfirmStockCommand).Assembly));
+
+builder.Services.AddInfrastructureServices(builder.Configuration);
+
+
 
 // Add services to the container.
 
